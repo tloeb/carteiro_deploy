@@ -29,17 +29,22 @@ sudo \cp -f -v /vagrant/static/carteirofiles/carteiro_web.conf /etc/apache2/site
 #Copy Stable WinRM Version
 sudo \cp -r -f -v /vagrant/static/carteirofiles/winrm/* /usr/lib/python3/dist-packages/
 echo
+echo "******** Create Log File *****************"
+echo
+sudo mkdir /var/log/carteiro
+sudo touch /var/log/carteiro/carteiro.log
+sudo chown -R www-data:www-data /var/log/carteiro/
 echo "******** Setting Up the Database *********"
 echo
 #Setting up the Database
 CUSER="$(python3 /vagrant/static/carteirofiles/carteiro/Carteiro/carteiro_settings.py db_user)"
-CPASSWD="$(python3 /vagrant/static/carteirofiles/carteiro/Carteiro/carteiro_settings.py db_user)"
+CPASSWD="$(python3 /vagrant/static/carteirofiles/carteiro/Carteiro/carteiro_settings.py db_passwd)"
 echo "USERNAME: $CUSER"
 echo "PASSWORD: $CPASSWD"
 sudo -u postgres createuser "$CUSER" 
 sudo -u postgres createdb -O "$CUSER" carteiro_data
 sudo -u postgres psql -d carteiro_data -c "ALTER USER "$CUSER" WITH PASSWORD '$CPASSWD'"
-python3 /var/www/carteiro.web/manage.py syncdb --noinput
+sudo python3 /var/www/carteiro.web/manage.py syncdb --noinput
 echo
 echo "******** Enable Website *********"
 echo
@@ -52,8 +57,3 @@ echo "******** Inserting Firewall Rule *********"
 echo
 # Firewall Settings for Apache Web
 sudo iptables -I INPUT 1 -p tcp --dport 80 -j ACCEPT
-echo "******** Create Log File *****************"
-echo
-sudo mkdir /var/log/carteiro
-sudo touch /var/log/carteiro/carteiro.log
-sudo chown -R www-data:www-data /var/log/carteiro/
