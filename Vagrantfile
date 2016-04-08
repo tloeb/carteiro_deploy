@@ -9,6 +9,7 @@ Vagrant.configure(2) do |config|
     carteiro.vm.hostname = 'carteiro'
     carteiro.vm.network :forwarded_port, host:5000, guest:80
     carteiro.vm.network "private_network", ip: "192.168.0.1"
+    carteiro.vm.network "public_network"
     carteiro.vm.provision :shell, :path => "static/carteirofiles/install_carteiro.sh"
   end
 
@@ -45,14 +46,13 @@ Vagrant.configure(2) do |config|
   end
 
   #Munki Server
-  config.vm.define "munki" do |munki|
-    munki.vm.box = "AndrewDryga/vagrant-box-osx"
-    munki.vm.hostname = "munki"
-    munki.vm.network "private_network", ip: "192.168.0.3"
-    munki.vm.network :forwarded_port, guest: 5900, host:5900
-    munki.vm.provider "virtualbox" do |v|
-      v.memory = 2048
-      v.cpus = 4
-    end
-  end
+  #config.vm.define "munki" do |munki|
+  #  munki.vm.box = "AndrewDryga/vagrant-box-osx"
+  #  munki.vm.hostname = "munki"
+  #  munki.vm.network "private_network", ip: "192.168.0.3"
+  #  munki.vm.network :forwarded_port, guest: 5900, host:5900
+  #  munki.vm.provider "virtualbox" do |v|
+  #    v.cpus = 2
+  #  end
+  #end
 end
